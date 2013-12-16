@@ -119,6 +119,7 @@ void init_options() {
     opts.color_path = ag_strdup(color_path);
     opts.color_match = ag_strdup(color_match);
     opts.color_line_number = ag_strdup(color_line_number);
+    opts.max_printable_line_length = DEFAULT_MAX_PRINTABLE_LINE_LENGTH;
 }
 
 void cleanup_options() {
@@ -229,6 +230,8 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
         { "version", no_argument, &version, 1 },
         { "word-regexp", no_argument, NULL, 'w' },
         { "workers", required_argument, NULL, 0 },
+        { "max-printable-line-length", required_argument, NULL, 'M' },
+        { NULL, 0, NULL, 0 }
     };
 
     longopts_len = (sizeof(base_longopts) / sizeof(option_t));
@@ -273,7 +276,7 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
         opts.stdout_inode = statbuf.st_ino;
     }
 
-    while ((ch = getopt_long(argc, argv, "A:aB:C:DG:g:fhiLlm:np:QRrSsvVtuUwz", longopts, &opt_index)) != -1) {
+    while ((ch = getopt_long(argc, argv, "A:aB:C:DG:g:fhiLlm:M:np:QRrSsvVtuUwz", longopts, &opt_index)) != -1) {
         switch (ch) {
             case 'A':
                 opts.after = atoi(optarg);
@@ -325,6 +328,9 @@ void parse_options(int argc, char **argv, char **base_paths[], char **paths[]) {
                 break;
             case 'm':
                 opts.max_matches_per_file = atoi(optarg);
+                break;
+            case 'M':
+                opts.max_printable_line_length = atoi(optarg);
                 break;
             case 'n':
                 opts.recurse_dirs = 0;
